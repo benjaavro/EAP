@@ -1,0 +1,15 @@
+.navbar {
+    position: static;
+}
+
+.banner {
+    height: auto;
+    background-color: lightgray;
+    color: #238DFF;
+    align-content: center;
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    position: fixed;
+    display: none;
+}
