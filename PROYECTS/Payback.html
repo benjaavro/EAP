@@ -7,15 +7,15 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
 
     <title>Proyecto Equipo 1</title>
   </head>
   <body>
     <!--- Nav Bar --->
     <nav class="navbar navbar-dark bg-primary navbar-expand-lg">
-      <a class="navbar-brand" href="index.html">
-        <img src="IMG/logo-tec-W.png" height="40" alt="">
+      <a class="navbar-brand" href="../index.html">
+        <img src="../IMG/logo-tec-W.png" height="40" alt="">
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -25,23 +25,23 @@
         <ul class="navbar-nav mr-auto">
          
           <li class="nav-item active" id="nav-payback">
-            <a class="nav-link" href="PROYECTS/Payback.html">Payback Period</a>
+            <a class="nav-link" href="Payback.html">Payback Period</a>
           </li>
           
           <li class="nav-item" id="nav-npv">
-            <a class="nav-link" href="PROYECTS/NPV.html">NPV</a>
+            <a class="nav-link" href="NPV.html">NPV<span class="sr-only">(current)</span></a>
           </li>
           
           <li class="nav-item" id="nav-checklist">
-            <a class="nav-link" href="PROYECTS/Checklist.html">Checklist</a>
+            <a class="nav-link" href="Checklist.html">Checklist</a>
           </li>
           
           <li class="nav-item" id="nav-depreciation">
-            <a class="nav-link" href="PROYECTS/Depreciation.html">Depreciation</a>
+            <a class="nav-link" href="Depreciation.html">Depreciation</a>
           </li>
           
           <li class="nav-item" id="nav-proyect">
-            <a class="nav-link" href="PROYECTS/ProyectScreening.html">Proyect Screening Methods</a>
+            <a class="nav-link" href="ProyectScreening.html">Proyect Screening Methods</a>
           </li>
         </ul>
         <h4 style="color: white;">Proyecto Final / Equipo #1</h4>
@@ -51,7 +51,7 @@
     <!--- Hovered Section --->
     
     <!--- Proyect Info --->
-    <div class="banner banner-info container-fluid" style="display: block;">
+    <div class="banner banner-info container-fluid">
         <h2>Evaluación y Administración de Proyectos</h2>
         <h4>Proyect Portfolio Evaluation Tool</h4>
         <h4>Mtro. Octavio Gutiérrez</h4>
@@ -89,6 +89,11 @@
         <h5>Descripción de Proyect Screening Methods</h5>
     </div>
     
+    <!--- BLOCK --->
+    <div class="block container-fluid">
+       
+    </div>
+    
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -97,52 +102,51 @@
     
     <script>
     $(document).ready(function(){
-      $("#nav-payback").hover(function(){
-        $(".banner-payback").css("display", "block");
-        $(".banner-info").css("display", "none");
-        }, function(){
-        $(".banner-payback").css("display", "none");
+      $(".navbar-brand").hover(function(){
         $(".banner-info").css("display", "block");
+        }, function(){
+        $(".banner-info").css("display", "none");
       });
     });
         
     $(document).ready(function(){
+      $("#nav-payback").hover(function(){
+        $(".banner-payback").css("display", "block");
+        }, function(){
+        $(".banner-payback").css("display", "none");
+      });
+    });    
+        
+        
+    $(document).ready(function(){
       $("#nav-npv").hover(function(){
         $(".banner-npv").css("display", "block");
-        $(".banner-info").css("display", "none");
         }, function(){
         $(".banner-npv").css("display", "none");
-        $(".banner-info").css("display", "block");
       });
     });
         
     $(document).ready(function(){
       $("#nav-checklist").hover(function(){
         $(".banner-checklist").css("display", "block");
-        $(".banner-info").css("display", "none");
         }, function(){
         $(".banner-checklist").css("display", "none");
-        $(".banner-info").css("display", "block");
       });
     });
         
     $(document).ready(function(){
       $("#nav-depreciation").hover(function(){
         $(".banner-depreciation").css("display", "block");
-        $(".banner-info").css("display", "none");
         }, function(){
         $(".banner-depreciation").css("display", "none");
-        $(".banner-info").css("display", "block");
       });
     });    
         
     $(document).ready(function(){
       $("#nav-proyect").hover(function(){
         $(".banner-proyect").css("display", "block");
-        $(".banner-info").css("display", "none");
         }, function(){
         $(".banner-proyect").css("display", "none");
-        $(".banner-info").css("display", "block");
       });
     });
         
