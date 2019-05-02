@@ -124,6 +124,12 @@
             <h1 id="resultado" style="text-align: center; margin: auto;"></h1>
         </div>
         
+        <div class="row">
+            <div class="col-4"></div>
+            <div type="submit" class="btn btn-primary col-4" id="again" style="display: none;"><a href="NPV.html" style="color: white;">Calcular otra vez</a></div>
+            <div class="col-4"></div>
+        </div>
+        
     </div>
     
     <!-- Optional JavaScript -->
@@ -133,13 +139,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     
     <script>
-        function result(suma, npv) {
-                suma = parseFloat(suma) + parseFloat(npv);
-                console.log("Suma: " + suma);
-        }
-        
-        var suma = 0;
-        
         function NPV(number, rate) {
             var cash = $('#cashflow' + number).val();
             var npv;
@@ -151,12 +150,12 @@
             } else {
                 npv = (cash / Math.pow(1 + (rate/100), number)); 
                 $('#npv' + number).html((npv).toFixed(2));
-                
             }
             
             suma = parseFloat(suma) + parseFloat(npv);
-            //console.log("Suma: " + suma);
             $('#resultado').html((suma).toFixed(2));
+            
+            $("#again").css("display", "block");
         }
         
         function addRow(number) {
