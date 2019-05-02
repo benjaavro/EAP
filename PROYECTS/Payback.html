@@ -88,69 +88,214 @@
         <h2>Proyect Screening Methods</h2>
         <h5>Descripción de Proyect Screening Methods</h5>
     </div>
-    
+
     <!--- BLOCK --->
     <div class="block container-fluid">
-       
+        <h1 class="block-title">PAYBACK PERIOD CALCULATOR</h1>
+        <form>
+            <div class="row">
+                <div class="form-group col-6">
+                    <label>Period Numbers</label>
+                    <input type="number" class="form-control" id="periods-input" placeholder="1-10" required min=1 max=10>
+                    <small class="form-text text-muted">Introduce un número de periodos a evaluar entre 1 - 10</small>
+                </div>
+                <div class="form-group col-6">
+                    <label>Principal</label>
+                    <input type="number" class="form-control" id="principal" placeholder="0" required min=1>
+                    <small class="form-text text-muted">Introduce la cantidad inicial del proyecto</small>
+                </div>
+                <div class="form-group col-6">
+                    <label>Discount Rate</label>
+                    <input type="number" class="form-control" id="rate-input" placeholder="0.0001 - 0.9999" required min=1 max=99 step="0.01">
+                    <small class="form-text text-muted">Introduce una taza de interés entre 1% - 99% (Acepta hasta dos decimales)</small>
+                </div>
+            </div>
+            <div type="submit" class="btn btn-primary" id="generar">Generar Tabla</div>
+        </form>
+
+        <div class="container" id="output">
+
+        </div>
+
+        <div class="row">
+            <div class="col-4"></div>
+            <div type="submit" class="btn btn-primary col-4" id="calcular" style="display: none;">Calcular PBP</div>
+            <div class="col-4"></div>
+        </div>
+
+        <div class="row" style="padding-top: 20px;">
+            <h3 id="resultado-title" style="text-align: center; display: none; margin: auto;">Año de retorno de la inversión:</h3>
+            <br>
+            <h1 id="resultado" style="text-align: center; margin: auto;"></h1>
+        </div>
+
+        <div class="row">
+            <div class="col-4"></div>
+            <div type="submit" class="btn btn-primary col-4" id="again" style="display: none;"><a href="Payback.html" style="color: white;">Calcular otra vez</a></div>
+            <div class="col-4"></div>
+        </div>
+
     </div>
-    
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    
+
     <script>
-    $(document).ready(function(){
-      $(".navbar-brand").hover(function(){
-        $(".banner-info").css("display", "block");
-        }, function(){
-        $(".banner-info").css("display", "none");
-      });
-    });
-        
-    $(document).ready(function(){
-      $("#nav-payback").hover(function(){
-        $(".banner-payback").css("display", "block");
-        }, function(){
-        $(".banner-payback").css("display", "none");
-      });
-    });    
-        
-        
-    $(document).ready(function(){
-      $("#nav-npv").hover(function(){
-        $(".banner-npv").css("display", "block");
-        }, function(){
-        $(".banner-npv").css("display", "none");
-      });
-    });
-        
-    $(document).ready(function(){
-      $("#nav-checklist").hover(function(){
-        $(".banner-checklist").css("display", "block");
-        }, function(){
-        $(".banner-checklist").css("display", "none");
-      });
-    });
-        
-    $(document).ready(function(){
-      $("#nav-depreciation").hover(function(){
-        $(".banner-depreciation").css("display", "block");
-        }, function(){
-        $(".banner-depreciation").css("display", "none");
-      });
-    });    
-        
-    $(document).ready(function(){
-      $("#nav-proyect").hover(function(){
-        $(".banner-proyect").css("display", "block");
-        }, function(){
-        $(".banner-proyect").css("display", "none");
-      });
-    });
-        
+        function NPV(number, rate) {
+            var cash = $('#cashflow' + number).val();
+            var npv;
+
+            if(number == 0) {
+                npv = cash;
+                $('#npv' + number).html(npv);
+
+            } else {
+                npv = (cash / Math.pow(1 + (rate/100), number));
+                $('#npv' + number).html((npv).toFixed(2));
+            }
+
+            suma = parseFloat(suma) + parseFloat(npv);
+            $('#resultado').html((suma).toFixed(2));
+
+            $("#again").css("display", "block");
+        }
+
+        function addRow(number) {
+            $("#output").append('<div class="row">' +
+                '<div class="col-2">' +
+                '<h3>' + number + '<h3>' +
+                '</div>' +
+                '<div class="col-2">' +
+                '<input id="inflows' + number +'" type="number" required step="0.01">' +
+                '</div>' +
+                '<div class="col-2">' +
+                '<input id="outflows' + number +'" type="number" required step="0.01">' +
+                '</div>' +
+                '<div class="col-2">' +
+                '<h3 id="df' + number + '"> - </h3>' +
+                '</div>' +
+                '<div class="col-2">' +
+                '<h3 id="dfc' + number + '"> - </h3>' +
+                '</div>' +
+                '<div class="col-2">' +
+                '<h3 id="payback' + number + '"> - </h3>' +
+                '</div>'
+                        );
+        };
+
+
+        $(document).ready(function() {
+            $("#generar").click(function() {
+                $("#output").html("<h1></h1>");
+
+                var periodos = $('#periods-input').val();
+                var tasa = $('#rate-input').val();
+
+                if ((periodos >= 1) && (periodos <= 10) && (tasa > 0) && (tasa < 100)) {
+                    console.log(periodos);
+                    console.log(tasa);
+
+                    $("#output").append("<h4> Número de periodos: " + periodos + "</h4>" + "<h4>Discount Rate: " + (tasa) + "</h4>");
+
+                    $("#output").append(
+                        '<div class="row">' +
+                        '<div class="col-2">' +
+                        '<h3>Period<h3>' +
+                        '</div>' +
+                        '<div class="col-2">' +
+                        '<h3>INFLOWS<h3>' +
+                        '</div>' +
+                        '<div class="col-2">' +
+                        '<h3>OUTFLOWS<h3>' +
+                        '</div>' +
+                        '<div class="col-2">' +
+                        '<h3>DF<h3>' +
+                        '</div>' +
+                        '<div class="col-2">' +
+                        '<h3>DFC<h3>' +
+                        '</div>' +
+                        '<div class="col-2">' +
+                        '<h3>PAYBACK<h3>' +
+                        '</div>' +
+                        '</div>');
+
+                    for(var i = 0; i <= periodos; i++) {
+                        addRow(i);
+                    }
+
+                    $("#calcular").css("display", "block");
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            $("#calcular").click(function() {
+                var periodos = $('#periods-input').val();
+                var tasa = $('#rate-input').val();
+                suma = 0;
+
+                for(var i = 0; i <= periodos; i++) {
+                    NPV(i, tasa);
+                }
+
+                $("#resultado-title").css("display", "block");
+            });
+        });
     </script>
-    
+
+    <script>
+        $(document).ready(function(){
+            $(".navbar-brand").hover(function(){
+                $(".banner-info").css("display", "block");
+            }, function(){
+                $(".banner-info").css("display", "none");
+            });
+        });
+
+        $(document).ready(function(){
+            $("#nav-payback").hover(function(){
+                $(".banner-payback").css("display", "block");
+            }, function(){
+                $(".banner-payback").css("display", "none");
+            });
+        });
+
+
+        $(document).ready(function(){
+            $("#nav-npv").hover(function(){
+                $(".banner-npv").css("display", "block");
+            }, function(){
+                $(".banner-npv").css("display", "none");
+            });
+        });
+
+        $(document).ready(function(){
+            $("#nav-checklist").hover(function(){
+                $(".banner-checklist").css("display", "block");
+            }, function(){
+                $(".banner-checklist").css("display", "none");
+            });
+        });
+
+        $(document).ready(function(){
+            $("#nav-depreciation").hover(function(){
+                $(".banner-depreciation").css("display", "block");
+            }, function(){
+                $(".banner-depreciation").css("display", "none");
+            });
+        });
+
+        $(document).ready(function(){
+            $("#nav-proyect").hover(function(){
+                $(".banner-proyect").css("display", "block");
+            }, function(){
+                $(".banner-proyect").css("display", "none");
+            });
+        });
+
+    </script>
   </body>
 </html>
