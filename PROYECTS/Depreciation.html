@@ -80,7 +80,7 @@
     <!--- Depreciation Info --->
     <div class="banner banner-depreciation container-fluid">
         <h2>Depreciation</h2>
-        <h5>Descripción de Depreciation</h5>
+        <h5>La Depreciación es un descuento concedido para el consumo de capital. Actúa como un escudo contra los impuestos.</h5>
     </div>
     
     <!--- Proyect Screening Methods --->
@@ -91,6 +91,70 @@
     
     <!--- BLOCK --->
     <div class="block container-fluid">
+      <h1 class="block-title">DEPRECIATION</h1>
+      <form>
+        <div class="row">
+            <div type="submit" class="btn btn-primary" id="macrs">STRAIGHT LINE</div>
+            <div type="submit" class="btn btn-primary" id="sline"> MACRS</div>
+        </div>
+       <div class="row">
+           <div class="form-group col-6" style="display: none;" id="periods-input-display">
+              <label>Period Number</label>
+              <input type="number" class="form-control" id="periods-input" placeholder="1-10" required min=1 max=10 >
+              <small class="form-text text-muted">Introduce un número de periodos a evaluar entre 1 - 10</small>
+            </div>
+            <div class="form-group col-6" style="display: none;" id="start-year-display">
+              <label>Starting year</label>
+              <input type="number" class="form-control" id="start-year" placeholder="0" required min=1 max="periods-input">
+              <small class="form-text text-muted">Introduce el periodo de inicio </small>
+            </div>
+       </div>
+       <div class="row">
+          <div class="form-group col-6" style="display: none;" id="tax-display">
+             <label>Tax (%) </label>
+             <input type="number" class="form-control" id="tax" placeholder="0.0001 - 0.9999" required min=1 max=99 step="0.01" >
+             <small class="form-text text-muted">Introduce un tax rate entre 1% - 99% (Acepta hasta dos decimales) </small>
+           </div>
+           <div class="form-group col-6" style="display: none;" id="svalue-display">
+             <label>Salvage value</label>
+             <input type="number" class="form-control" id="svalue" placeholder="2000" required min=1 max="principal">
+             <small class="form-text text-muted">Introduce el valor del salvage value </small>
+           </div>
+      </div>
+       <div class="row">
+          <div class="form-group col-6" style="display: none;" id="principal-display">
+             <label>Principal</label>
+             <input type="number" class="form-control" id="principal" placeholder="10000" >
+             <small class="form-text text-muted">Introduce la inversión inicial </small>
+           </div>
+           <div class="form-group col-6" style="display: none;" id="svalue-year-display">
+             <label>Period of salvage value</label>
+             <input type="number" class="form-control" id="svalue-year" placeholder="5" required min=1 max="periods-input">
+             <small class="form-text text-muted">Introduce el periodo en que se aplica el salvage value </small>
+           </div>
+      </div>
+      <div class="row">
+          <div class="form-group col-6" style="display: none;" id="dep-category-display">
+             <label>Depreciation category</label>
+             <input type="number" class="form-control" id="dep-category" placeholder="7" >
+             <small class="form-text text-muted">Introduce la categoría de MARCS</small>
+           </div>
+      </div>
+           <div type="submit" class="btn btn-primary" id="generar" style="display: none;">Generar Tabla</div>
+      </form>
+      
+      <div class="container" id="output">
+          
+      </div>
+      
+      <div class="row">
+          <div class="col-4"></div>
+          <div type="submit" class="btn btn-primary col-4" id="calcular" style="display: none;">Calcular Depreciación </div>
+          <div class="col-4"></div>
+      </div>
+      
+      
+  </div>
        
     </div>
     
@@ -99,7 +163,124 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    
+    <script>
+       $(document).ready(function() {
+            $("#macrs").click(function() {
+               
+                $("#periods-input-display").css("display", "block");
+                $("#principal-display").css("display", "block");
+                $("#svalue-display").css("display", "block");
+                $("#generar").css("display", "block");
+
+                $("#tax-display").css("display", "none");
+                $("#start-year-display").css("display", "none");
+                $("#svalue-year-display").css("display", "none");
+                $("#dep-category-display").css("display", "none");
+                $("#output").css("display", "none");
+                $("#calcular").css("display", "none");
+               
+            });
+        });
+        $(document).ready(function() {
+            $("#sline").click(function() {
+               
+                $("#periods-input-display").css("display", "block");
+                $("#principal-display").css("display", "block");
+                $("#svalue-display").css("display", "block");
+                $("#tax-display").css("display", "block");
+                $("#start-year-display").css("display", "block");
+                $("#svalue-year-display").css("display", "block");
+                $("#dep-category-display").css("display", "block");
+                $("#generar").css("display", "block");
+                $("#output").css("display", "none");
+                $("#calcular").css("display", "none");
+               
+            });
+        });
+        function addRow(number) {
+            $("#output").append('<div class="row">' +
+                            '<div class="col-4">' +
+                                '<h3>' + number + '<h3>' +
+                            '</div>' +
+                            '<div class="col-4">' +
+                                '<h3 id="dep' + number + '"> - </h3>' +
+                            '</div>' +
+                            '<div class="col-4">' +
+                                '<h3 id="vledger' + number + '"> - </h3>' +
+                            '</div>');
+        };
+
+        $(document).ready(function() {
+            $("#generar").click(function() {
+              $("#output").css("display", "block");
+              
+                $("#output").html("<h1></h1>");
+                
+                var periodos = $('#periods-input').val();
+                var principal = $('#principal').val();
+                var salvagev = $('#svalue').val();
+                
+                if ((periodos >= 1) && (periodos <= 10)) {
+                    
+                    
+                    $("#output").append("<h4> Número de periodos: " + periodos + "</h4>" + "<h4>Principal: " + principal + "</h4>"+"<h4>Salvage value: " + salvagev + "</h4>");
+                    
+                    $("#output").append(
+                        '<div class="row">' +
+                            '<div class="col-4">' +
+                                '<h3>Period<h3>' +
+                            '</div>' +
+                            '<div class="col-4">' +
+                                '<h3>Depreciation<h3>' +
+                            '</div>' +
+                            '<div class="col-4">' +
+                                '<h3>Value in ledger<h3>' +
+                            '</div>'+
+                        '</div>');
+                      
+                    for(var i = 0; i <= periodos; i++) {
+                        addRow(i);
+                    }
+                    
+                    $("#calcular").css("display", "block");
+                }
+            });
+        });
+
+        function DEP(number, p, svalue) {
+            
+            var depreciation=0;
+            var valedger=0;
+            
+            if(number == 0) {
+                depreciation=0;
+                valedger=p;
+                $('#dep' + number).html(depreciation);
+                $('#vledger' + number).html(valedger);
+                
+            } else {
+                depreciation = ((p-svalue)/number); 
+                $('#dep' + number).html((depreciation).toFixed(2));
+                valedger = (p-depreciation); 
+                $('#vledger' + number).html((valedger).toFixed(2));
+                
+            }
+            
+        }
+        $(document).ready(function() {
+            $("#calcular").click(function() {
+                var periodos = $('#periods-input').val();
+                var principal = $('#principal').val();
+                var salvage = $('#svalue').val();
+                suma = 0;
+                
+                for(var i = 0; i <= periodos; i++) {
+                    DEP(i, principal, salvage);
+                }
+                
+            });
+        });
+    </script>
     <script>
     $(document).ready(function(){
       $(".navbar-brand").hover(function(){
