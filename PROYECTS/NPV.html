@@ -13,7 +13,7 @@
   </head>
   <body>
     <!--- Nav Bar --->
-    <nav class="navbar navbar-dark bg-primary navbar-expand-lg">
+    <nav class="navbar navbar-dark bg-primary navbar-expand-lg col-12">
       <a class="navbar-brand" href="../index.html">
         <img src="../IMG/logo-tec-W.png" height="40" alt="">
       </a>
@@ -91,7 +91,39 @@
     
     <!--- BLOCK --->
     <div class="block container-fluid">
-       <h1>HOLA</h1> 
+        <h1 class="block-title">NET PRESENT VALUE CALCULATOR</h1>
+        <form>
+         <div class="row">
+             <div class="form-group col-6">
+                <label>Period Numbers</label>
+                <input type="number" class="form-control" id="periods-input" placeholder="1-10" required min=1 max=10>
+                <small class="form-text text-muted">Introduce un número de periodos a evaluar entre 1 - 10</small>
+              </div>
+              <div class="form-group col-6">
+                <label>Discount Rate</label>
+                <input type="number" class="form-control" id="rate-input" placeholder="0.0001 - 0.9999" required min=1 max=99 step="0.01">
+                <small class="form-text text-muted">Introduce una taza de interés entre 1% - 99% (Acepta hasta dos decimales)</small>
+              </div>
+         </div>
+             <div type="submit" class="btn btn-primary" id="generar">Generar Tabla</div>
+        </form>
+        
+        <div class="container" id="output">
+            
+        </div>
+        
+        <div class="row">
+            <div class="col-4"></div>
+            <div type="submit" class="btn btn-primary col-4" id="calcular" style="display: none;">Calcular NPV</div>
+            <div class="col-4"></div>
+        </div>
+        
+        <div class="row" style="padding-top: 20px;">
+            <h3 id="resultado-title" style="text-align: center; display: none; margin: auto;">Valor de la inversión después de N periodos:</h3>
+            <br>
+            <h1 id="resultado" style="text-align: center; margin: auto;"></h1>
+        </div>
+        
     </div>
     
     <!-- Optional JavaScript -->
@@ -99,6 +131,97 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    
+    <script>
+        function result(suma, npv) {
+                suma = parseFloat(suma) + parseFloat(npv);
+                console.log("Suma: " + suma);
+        }
+        
+        var suma = 0;
+        
+        function NPV(number, rate) {
+            var cash = $('#cashflow' + number).val();
+            var npv;
+            
+            if(number == 0) {
+                npv = cash;
+                $('#npv' + number).html(npv);
+                
+            } else {
+                npv = (cash / Math.pow(1 + (rate/100), number)); 
+                $('#npv' + number).html((npv).toFixed(2));
+                
+            }
+            
+            suma = parseFloat(suma) + parseFloat(npv);
+            //console.log("Suma: " + suma);
+            $('#resultado').html((suma).toFixed(2));
+        }
+        
+        function addRow(number) {
+            $("#output").append('<div class="row">' +
+                            '<div class="col-4">' +
+                                '<h3>' + number + '<h3>' +
+                            '</div>' +
+                            '<div class="col-4">' +
+                                '<input id="cashflow' + number +'" type="number" required step="0.01">' +
+                            '</div>' +
+                            '<div class="col-4">' +
+                                '<h3 id="npv' + number + '"> - </h3>' +
+                            '</div>');
+        };
+        
+        
+        $(document).ready(function() {
+            $("#generar").click(function() {
+                $("#output").html("<h1></h1>");
+                
+                var periodos = $('#periods-input').val();
+                var tasa = $('#rate-input').val();
+                
+                if ((periodos >= 1) && (periodos <= 10) && (tasa > 0) && (tasa < 100)) {
+                    console.log(periodos);
+                    console.log(tasa);
+                    
+                    $("#output").append("<h4> Número de periodos: " + periodos + "</h4>" + "<h4>Tasa de Interés: " + (tasa/100) + "</h4>");
+                    
+                    $("#output").append(
+                        '<div class="row">' +
+                            '<div class="col-4">' +
+                                '<h3>Period<h3>' +
+                            '</div>' +
+                            '<div class="col-4">' +
+                                '<h3>Cashflow in N period<h3>' +
+                            '</div>' +
+                            '<div class="col-4">' +
+                                '<h3>NPV<h3>' +
+                            '</div>' +
+                        '</div>');
+                      
+                    for(var i = 0; i <= periodos; i++) {
+                        addRow(i);
+                    }
+                    
+                    $("#calcular").css("display", "block");
+                }
+            });
+        });
+        
+        $(document).ready(function() {
+            $("#calcular").click(function() {
+                var periodos = $('#periods-input').val();
+                var tasa = $('#rate-input').val();
+                suma = 0;
+                
+                for(var i = 0; i <= periodos; i++) {
+                    NPV(i, tasa);
+                }
+                
+                $("#resultado-title").css("display", "block");
+            });
+        });
+    </script>
     
     <script>
     $(document).ready(function(){
@@ -150,7 +273,6 @@
       });
     });
         
-    </script>
-    
+    </script>    
   </body>
 </html>
