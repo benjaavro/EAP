@@ -91,7 +91,7 @@
 
     <!--- BLOCK --->
     <div class="block container-fluid">
-        <h1 class="block-title">PAYBACK PERIOD CALCULATOR</h1>
+        <h1 class="block-title">DISCOUNTED PAYBACK PERIOD CALCULATOR</h1>
         <form>
             <div class="row">
                 <div class="form-group col-6">
@@ -106,8 +106,8 @@
                 </div>
                 <div class="form-group col-6">
                     <label>Discount Rate</label>
-                    <input type="number" class="form-control" id="rate-input" placeholder="0.0001 - 0.9999" required min=1 max=99 step="0.01">
-                    <small class="form-text text-muted">Introduce una taza de interés entre 1% - 99% (Acepta hasta dos decimales)</small>
+                    <input type="number" class="form-control" id="rate-input" placeholder="0.01 - 0.99" required min=1 max=99 step="0.01">
+                    <small class="form-text text-muted">Introduce taza entre 1% - 99% (2 decimales y si es 0 se calculara solo el payback period)</small>
                 </div>
             </div>
             <div type="submit" class="btn btn-primary" id="generar">Generar Tabla</div>
@@ -144,22 +144,45 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
     <script>
-        function NPV(number, rate) {
-            var cash = $('#cashflow' + number).val();
-            var npv;
+        var sem = 0;
+        function DPBP(number, rate) {
+            var periodos = $('#periods-input').val();
+            var tasa = $('#rate-input').val()/100;
+            var principal = $('#principal').val();
+            var cash;
+            var df;
+            var dfc;
 
             if(number == 0) {
-                npv = cash;
-                $('#npv' + number).html(npv);
+                $('#df' + number).html(1);
+                df = (1 / Math.pow(1 + (rate), number));
+                cash = $('#inflows' + number).val() - $('#outflows' + number).val();
+                dfc = df * cash;
+                $('#dfc' + number).html((dfc).toFixed(2));
+                $('#payback' + number).html((dfc).toFixed(2));
+                pbp = dfc;
 
             } else {
-                npv = (cash / Math.pow(1 + (rate/100), number));
-                $('#npv' + number).html((npv).toFixed(2));
+                console.log("Entro en el else");
+                df = (1 / Math.pow(1 + (rate), number));
+                $('#df' + number).html((df).toFixed(2));
+                cash = $('#inflows' + number).val() - $('#outflows' + number).val();
+                dfc = df * cash;
+                $('#dfc' + number).html((dfc).toFixed(2));
+                pbp = pbp + dfc;
+                if(pbp >=0 || (pbp)*-1 < dfc){
+                    $('#payback' + number).html((pbp).toFixed(2).fontcolor("green"));
+                    if(sem === 0){
+                        $("#resultado-title").css("display", "block");
+                        console.log("Calculos");
+                        console.log(pbp);
+                        console.log(dfc);
+                        sem = (periodos-1) + ((pbp)/dfc);
+                        $('#resultado').html((sem).toFixed(2));
+                    sem = 1;}
+                }
+                else $('#payback' + number).html((pbp).toFixed(2));
             }
-
-            suma = parseFloat(suma) + parseFloat(npv);
-            $('#resultado').html((suma).toFixed(2));
-
             $("#again").css("display", "block");
         }
 
@@ -175,13 +198,13 @@
                 '<input id="outflows' + number +'" type="number" required step="0.01">' +
                 '</div>' +
                 '<div class="col-2">' +
-                '<h3 id="df' + number + '"> - </h3>' +
+                '<h3 id="df' + number + '"><i> - </i></h3>' +
                 '</div>' +
                 '<div class="col-2">' +
-                '<h3 id="dfc' + number + '"> - </h3>' +
+                '<h3 id="dfc' + number + '"><i> - </i></h3>' +
                 '</div>' +
                 '<div class="col-2">' +
-                '<h3 id="payback' + number + '"> - </h3>' +
+                '<h3 id="payback' + number + '"><i> - </i></h3>' +
                 '</div>'
                         );
         };
@@ -192,11 +215,12 @@
                 $("#output").html("<h1></h1>");
 
                 var periodos = $('#periods-input').val();
-                var tasa = $('#rate-input').val();
-
+                var tasa = $('#rate-input').val() / 100;
+                var principal = $('#principal').val();
                 if ((periodos >= 1) && (periodos <= 10) && (tasa > 0) && (tasa < 100)) {
                     console.log(periodos);
                     console.log(tasa);
+                    console.log(principal);
 
                     $("#output").append("<h4> Número de periodos: " + periodos + "</h4>" + "<h4>Discount Rate: " + (tasa) + "</h4>");
 
@@ -227,6 +251,8 @@
                     }
 
                     $("#calcular").css("display", "block");
+                    document.getElementById("outflows0").value = principal;
+
                 }
             });
         });
@@ -234,14 +260,14 @@
         $(document).ready(function() {
             $("#calcular").click(function() {
                 var periodos = $('#periods-input').val();
-                var tasa = $('#rate-input').val();
-                suma = 0;
+                var tasa = $('#rate-input').val()/100;
+                var principal = $('#principal').val();
+                var pbp;
 
                 for(var i = 0; i <= periodos; i++) {
-                    NPV(i, tasa);
+                    DPBP(i, tasa);
                 }
 
-                $("#resultado-title").css("display", "block");
             });
         });
     </script>
