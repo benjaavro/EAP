@@ -231,7 +231,7 @@
                                 '<h3>Period<h3>' +
                             '</div>' +
                             '<div class="col-4">' +
-                                '<h3>Depreciation<h3>' +
+                                '<h3>Depreciation Acc<h3>' +
                             '</div>' +
                             '<div class="col-4">' +
                                 '<h3>Value in ledger<h3>' +
@@ -247,21 +247,26 @@
             });
         });
 
-        function DEP(number, p, svalue) {
+        function DEP(number, p, svalue,periodos) {
             
-            var depreciation=0;
+            var depreciationan=0;
+            var depreciationac=0;
+
             var valedger=0;
             
             if(number == 0) {
-                depreciation=0;
+                depreciationac=0;
                 valedger=p;
-                $('#dep' + number).html(depreciation);
+                $('#dep' + number).html(depreciationac);
                 $('#vledger' + number).html(valedger);
                 
             } else {
-                depreciation = ((p-svalue)/number); 
-                $('#dep' + number).html((depreciation).toFixed(2));
-                valedger = (p-depreciation); 
+
+                depreciationac = ((p-svalue)/periodos)*number; 
+                
+                //depreciationac = depreciationac+depreciationan;
+                $('#dep' + number).html((depreciationac).toFixed(2));
+                valedger = (p-depreciationac); 
                 $('#vledger' + number).html((valedger).toFixed(2));
                 
             }
@@ -275,7 +280,7 @@
                 suma = 0;
                 
                 for(var i = 0; i <= periodos; i++) {
-                    DEP(i, principal, salvage);
+                    DEP(i, principal, salvage,periodos);
                 }
                 
             });
