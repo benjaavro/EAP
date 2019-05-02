@@ -91,7 +91,39 @@
     
     <!--- BLOCK --->
     <div class="block container-fluid">
-       
+        <p>Prueba</p>
+        <select>
+           <option value="periodo" id="periodo">1</option>
+            <option value="periodo" id="periodo">2</option>
+            <option value="periodo" id="periodo">3</option>
+            <option value="periodo" id="periodo">4</option>
+            <option value="periodo" id="periodo">5</option>
+            <option value="periodo" id="periodo">6</option>
+            <option value="periodo" id="periodo">7</option>
+            <option value="periodo" id="periodo">8</option>
+            <option value="periodo" id="periodo">9</option>
+            <option value="periodo" id="periodo">10</option>
+        </select>
+        <br>
+
+            Principal <input type="number" name="principal" value="" min="0" id="principal"><br>
+            Tasa de interes <input type="number" name="tasaInteres" value="" min="0" max="100" id="tasaInteres"><br>
+            <input type="submit" value="Enviar" id="bEnviar" onclick="myFunction()">
+
+                <p>Outflows</p>
+                <input type="number" name="inflow" value="Hola" min="0" id="out1"><br>
+                <input type="number" name="inflow" value="Hola" min="0" id="out2"><br>
+                <input type="number" name="inflow" value="Hola" min="0" id="out3"><br>
+                <p>Inflows</p>
+                <input type="number" name="inflow" min="0" id="inf1"><br>
+                <input type="number" name="inflow" min="0" id="inf2"><br>
+                <input type="number" name="inflow" min="0" id="inf3"><br>
+                <p>Cash flow</p>
+                <input type="number" name="inflow" id="flow1"><br>
+                <input type="number" name="inflow" id="flow2"><br>
+                <input type="number" name="inflow" id="flow3"><br>
+
+
     </div>
     
     <!-- Optional JavaScript -->
@@ -99,8 +131,28 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    
     <script>
+        function myFunction() {
+            var inf1 = document.getElementById("inf1").value;
+            var inf2 = document.getElementById("inf2").value;
+            var inf3 = document.getElementById("inf3").value;
+            var out1 = document.getElementById("out1").value;
+            var out2 = document.getElementById("out2").value;
+            var out3 = document.getElementById("out3").value;
+            var principal = document.getElementById("principal").value;
+
+            var flow1 = inf1-out1;
+            var flow2 = inf2-out2;
+            var flow3 = inf3-out3;
+
+            document.getElementById("flow1").value = flow1;
+            document.getElementById("flow2").value = flow2;
+            document.getElementById("flow3").value = flow3;
+
+        }
+    </script>
+    <script>
+
     $(document).ready(function(){
       $(".navbar-brand").hover(function(){
         $(".banner-info").css("display", "block");
