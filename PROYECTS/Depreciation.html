@@ -197,10 +197,10 @@
                 $("#start-year-display").css("display", "block");
                 $("#svalue-year-display").css("display", "block");
                 $("#dep-category-display").css("display", "block");
-               
+                $("#generar").css("display", "none");
                 $("#generarmcrs").css("display", "block");
                 $("#output").css("display", "none");
-             
+                $("#calcular").css("display", "none");
                 $("#calcularmcrs").css("display", "none");
                
             });
@@ -223,6 +223,27 @@
                 '</div>');
         };
 
+        function addRowM(number) {
+            $("#output").append(
+              '<div class="row">' +
+                            '<div class="col-2" >' +
+                                '<h3>' + number + '<h3>' +
+                            '</div>' +
+                            '<div class="col-2">' +
+                                '<h3 id="macrs' + number + '"> - </h3>' +
+                            '</div>' +
+                            '<div class="col-2">' +
+                                '<h3 id="dep' + number + '"> - </h3>' +
+                            '</div>' +
+                            '<div class="col-2">' +
+                                '<h3 id="vledgers' + number + '"> - </h3>' +
+                            '</div>'+ 
+                            '<div class="col-2">' +
+                                '<h3 id="tax' + number + '"> - </h3>' +
+                            '</div>'+
+                '</div>');
+        };
+
         $(document).ready(function() {
             $("#generar").click(function() {
               $("#output").css("display", "block");
@@ -240,7 +261,7 @@
                     $("#output").append("<h4> Número de periodos: " + periodos + "</h4>" + "<h4>Principal: " + principal + "</h4>"+"<h4>Salvage value: " + salvagev + "</h4>"+"<h4>Tax: " + tax + "%</h4>");
                     
                     $("#output").append(
-                        '<div class="row">' +
+                        '<div class="row" >' +
                             '<div class="col-3">' +
                                 '<h3>Period<h3>' +
                             '</div>' +
@@ -260,6 +281,56 @@
                     }
                     
                     $("#calcular").css("display", "block");
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            $("#generarmcrs").click(function() {
+              $("#output").css("display", "block");
+              
+                $("#output").html("<h1></h1>");
+                
+                var periodos = $('#periods-input').val();
+                var principal = $('#principal').val();
+                var salvagev = $('#svalue').val();
+                var tax = $('#tax').val();
+                var depCategory = $('#dep-category').val();
+                var yearSalvage = $('#svalue-year').val();
+
+                
+                if ((periodos >= 1) && (periodos <= 10)) {
+                    
+                    
+                    $("#output").append("<h4> Número de periodos: " + periodos + "</h4>" + 
+                    "<h4>Principal: " + principal + "</h4>"+"<h4>Salvage value: " + salvagev + 
+                    "</h4>"+"<h4>Tax: " + tax + "%</h4>"+"<h4>Categoría MACRS: " + depCategory + "</h4>"
+                    +"<h4>Periodo del Salvage Value: " + yearSalvage + "</h4>");
+                    
+                    $("#output").append(
+                        '<div class="row">' +
+                            '<div class="col-2">' +
+                                '<h3>Period<h3>' +
+                            '</div>' +
+                            '<div class="col-2">' +
+                                '<h3>MACRS<h3>' +
+                            '</div>' +
+                            '<div class="col-2">' +
+                                '<h3>Depreciation Acc<h3>' +
+                            '</div>' +
+                            '<div class="col-2">' +
+                                '<h3>Value in ledger<h3>' +
+                            '</div>'+
+                            '<div class="col-2">' +
+                                '<h3>Taxes<h3>' +
+                            '</div>'+
+                        '</div>');
+                      
+                    for(var i = 0; i <= periodos; i++) {
+                        addRowM(i);
+                    }
+                    
+                    $("#calcularmcrs").css("display", "block");
                 }
             });
         });
@@ -293,6 +364,70 @@
             }
             
         }
+
+
+        function MACRS(number, p, svalue,periodos,taxes,depc,syear) {
+            
+            var macrs3= ['-','33.33','44.45', '14.81', '7.41'];
+            var macrs5= ['-','20','32', '19.2', '11.52', '11.52','5.76'];
+            var macrs7= ['-','14.29','24.49', '17.49', '12.49', '8.93','8.92', '8.93', '4.46'];
+            var macrs10= ['-','10','18', '14.4', '11.52', '9.22','7.37', '6.55', '6.55', '6.56','6.55', '3.28'];
+            var afterTaxes;
+            var valedger=0;
+            var valedgerS=0;
+            
+            if(number == 0) {
+                depreciationac=0;
+                depacu=0;
+                valedger=p;
+                afterTaxes=(valedger*(taxes/100));
+                $('#dep' + number).html(depreciationac);
+                $('#vledgers' + number).html(valedger);
+                $('#tax' + number).html(afterTaxes);
+                
+            } else {
+              if(periodos<=4) depreciationac= (p*((macrs3[number]/100))); 
+              if((periodos>4)&&(periodos<=5))depreciationac= (p*((macrs5[number]/100)));
+              if((periodos>6)&&(periodos<=7))depreciationac= (p*((macrs7[number]/100)));
+              if((periodos>8)&&(periodos<=10))depreciationac= (p*((macrs10[number]/100)));
+
+
+              depacu+=depreciationac;
+
+               // depreciationac = ((p-svalue)/periodos)*number; 
+                
+                //depreciationac = depreciationac+depreciationan;
+                $('#dep' + number).html((depacu).toFixed(2));
+               if(number==syear) {
+                valedgerS =(p-depacu)+ parseFloat(svalue);
+                afterTaxes = (valedgerS*(taxes/100));
+                console.log (valedgerS)
+                $('#vledgers' + number).html((valedgerS).toFixed(2));
+                $('#tax' + number).html((afterTaxes).toFixed(2));
+               }
+               else 
+               {
+                valedger = (p-depacu);
+                afterTaxes = (valedger*(taxes/100));
+                $('#vledgers' + number).html((valedger).toFixed(2));
+                $('#tax' + number).html((afterTaxes).toFixed(2));
+
+               }
+                
+                
+
+            if(periodos<=4) $('#macrs' + number).html((macrs3[number]));
+            if((periodos>4)&&(periodos<=5)) $('#macrs' + number).html((macrs5[number]));
+            if((periodos>6)&&(periodos<=7)) $('#macrs' + number).html((macrs7[number]));
+            if((periodos>8)&&(periodos<=10)) $('#macrs' + number).html((macrs10[number]));
+                
+            }
+
+            
+
+            
+            
+        }
         $(document).ready(function() {
             $("#calcular").click(function() {
                 var periodos = $('#periods-input').val();
@@ -306,8 +441,27 @@
                 }
                 
             });
+          });
+
+
+            $(document).ready(function() {
+            $("#calcularmcrs").click(function() {
+                var periodos = $('#periods-input').val();
+                var principal = $('#principal').val();
+                var salvage = $('#svalue').val();
+                var tax = $('#tax').val();
+                var depCategory = $('#dep-category').val();
+                var yearSalvage = $('#svalue-year').val();
+                suma = 0;
+                
+                for(var i = 0; i <= periodos; i++) {
+                   MACRS(i, principal, salvage,periodos,tax,depCategory,yearSalvage);
+                }
+                
+            });
         });
     </script>
+    
     <script>
     $(document).ready(function(){
       $(".navbar-brand").hover(function(){
