@@ -96,6 +96,7 @@
         <div class="row">
             <div type="submit" class="btn btn-primary" id="sline">STRAIGHT LINE</div>
             <div type="submit" class="btn btn-primary" id="macrs"> MACRS</div>
+            <input type="reset"class="btn btn-primary" value="Borrar información"  id="reset">
         </div>
        <div class="row">
            <div class="form-group col-6" style="display: none;" id="periods-input-display">
@@ -107,7 +108,7 @@
        <div class="row">
           <div class="form-group col-6" style="display: none;" id="tax-display">
              <label>Tax (%) </label>
-             <input type="number" class="form-control" id="tax" placeholder="0.0001 - 0.9999" required min=1 max=99 step="0.01" >
+             <input type="number" class="form-control" id="tax" placeholder="%" required min=1 max=99 step="0.01" >
              <small class="form-text text-muted">Introduce un tax rate entre 1% - 99% (Acepta hasta dos decimales) </small>
            </div>
            <div class="form-group col-6" style="display: none;" id="svalue-display">
@@ -131,12 +132,16 @@
       <div class="row">
           <div class="form-group col-6" style="display: none;" id="dep-category-display">
              <label>Depreciation category</label>
-             <input type="number" class="form-control" id="dep-category" placeholder="7" >
-             <small class="form-text text-muted">Introduce la categoría de MARCS</small>
+             <input type="number" class="form-control" id="dep-category" placeholder="3,5,7,10" >
+             <small class="form-text text-muted">Introduce la categoría de MARCS correspondiente al números de periodos</small>
            </div>
+         
+          
+       
       </div>
            <div type="submit" class="btn btn-primary" id="generar" style="display: none;">Generar Tabla</div>
            <div type="submit" class="btn btn-primary" id="generarmcrs" style="display: none;">Generar Tabla</div>
+           
       </form>
       
       
@@ -153,6 +158,11 @@
         <div class="col-4"></div>
         <div type="submit" class="btn btn-primary col-4" id="calcularmcrs" style="display: none;">Calcular Depreciación </div>
         <div class="col-4"></div>
+
+       
+
+   
+
     </div>
       
       
@@ -208,16 +218,19 @@
         function addRow(number) {
             $("#output").append(
               '<div class="row">' +
-                            '<div class="col-3">' +
+                            '<div class="col-2">' +
                                 '<h3>' + number + '<h3>' +
                             '</div>' +
-                            '<div class="col-3">' +
+                            '<div class="col-2">' +
+                                '<h3 id="depan' + number + '"> - </h3>' +
+                            '</div>' +
+                            '<div class="col-2">' +
                                 '<h3 id="dep' + number + '"> - </h3>' +
                             '</div>' +
-                            '<div class="col-3">' +
+                            '<div class="col-2">' +
                                 '<h3 id="vledger' + number + '"> - </h3>' +
                             '</div>' +
-                            '<div class="col-3">' +
+                            '<div class="col-2">' +
                                 '<h3 id="atax' + number + '"> - </h3>' +
                             '</div>'+ 
                 '</div>');
@@ -231,6 +244,9 @@
                             '</div>' +
                             '<div class="col-2">' +
                                 '<h3 id="macrs' + number + '"> - </h3>' +
+                            '</div>' +
+                            '<div class="col-2">' +
+                                '<h3 id="depan' + number + '"> - </h3>' +
                             '</div>' +
                             '<div class="col-2">' +
                                 '<h3 id="dep' + number + '"> - </h3>' +
@@ -255,23 +271,26 @@
                 var salvagev = $('#svalue').val();
                 var tax = $('#tax').val();
                 
-                if ((periodos >= 1) && (periodos <= 10)) {
+                if ((periodos >= 1) && (periodos <= 10)&&(principal>0)&&(salvagev>0)/*&&(principal>salvagev)*/) {
                     
                     
                     $("#output").append("<h4> Número de periodos: " + periodos + "</h4>" + "<h4>Principal: " + principal + "</h4>"+"<h4>Salvage value: " + salvagev + "</h4>"+"<h4>Tax: " + tax + "%</h4>");
                     
                     $("#output").append(
                         '<div class="row" >' +
-                            '<div class="col-3">' +
+                            '<div class="col-2">' +
                                 '<h3>Period<h3>' +
                             '</div>' +
-                            '<div class="col-3">' +
+                            '<div class="col-2">' +
+                                '<h3>Depreciation Ann<h3>' +
+                            '</div>' +
+                            '<div class="col-2">' +
                                 '<h3>Depreciation Acc<h3>' +
                             '</div>' +
-                            '<div class="col-3">' +
+                            '<div class="col-2">' +
                                 '<h3>Value in ledger<h3>' +
                             '</div>'+
-                            '<div class="col-3">' +
+                            '<div class="col-2">' +
                                 '<h3>Taxes<h3>' +
                             '</div>'+
                         '</div>');
@@ -281,6 +300,10 @@
                     }
                     
                     $("#calcular").css("display", "block");
+                   
+                }
+                else{
+                  window.alert("Debe ingresar correctamente todos los campos");
                 }
             });
         });
@@ -298,8 +321,19 @@
                 var depCategory = $('#dep-category').val();
                 var yearSalvage = $('#svalue-year').val();
 
+                if((salvagev>0)&&(yearSalvage<1)){
+                  window.alert("Debe ingresar el año en que se aplica en salvage value");
+
+
+                }
+                if((depCategory!=3)&&(depCategory!=5)&&(depCategory!=7)&&(depCategory!=10)){
+                  window.alert("Debe ingresar una categoría de MACRS valida (3,5,,7,10)");
+
+
+                }
                 
-                if ((periodos >= 1) && (periodos <= 10)) {
+
+                  if ((periodos >= 1) && (periodos <= 10)&&(yearSalvage<=periodos)&&(depCategory>0)) {
                     
                     
                     $("#output").append("<h4> Número de periodos: " + periodos + "</h4>" + 
@@ -314,6 +348,9 @@
                             '</div>' +
                             '<div class="col-2">' +
                                 '<h3>MACRS<h3>' +
+                            '</div>' +
+                            '<div class="col-2">' +
+                                '<h3>Depreciation Ann<h3>' +
                             '</div>' +
                             '<div class="col-2">' +
                                 '<h3>Depreciation Acc<h3>' +
@@ -332,6 +369,15 @@
                     
                     $("#calcularmcrs").css("display", "block");
                 }
+                else{
+                  window.alert("Debe ingresar correctamente todos los campos");
+                }
+
+
+                
+
+                
+                
             });
         });
 
@@ -344,17 +390,20 @@
             
             if(number == 0) {
                 depreciationac=0;
+                depreciationan=0
                 valedger=p;
                 afterTaxes=(valedger*(taxes/100));
                 $('#dep' + number).html(depreciationac);
+                $('#depan' + number).html(depreciationan);
                 $('#vledger' + number).html(valedger);
                 $('#atax' + number).html(afterTaxes);
                 
             } else {
-
+                depreciationan =((p-svalue)/periodos);
                 depreciationac = ((p-svalue)/periodos)*number; 
                 
                 //depreciationac = depreciationac+depreciationan;
+                $('#depan' + number).html((depreciationan).toFixed(2));
                 $('#dep' + number).html((depreciationac).toFixed(2));
                 valedger = (p-depreciationac);
                 afterTaxes = (valedger*(taxes/100));
@@ -378,18 +427,20 @@
             
             if(number == 0) {
                 depreciationac=0;
+                depreciationan=0;
                 depacu=0;
                 valedger=p;
                 afterTaxes=(valedger*(taxes/100));
                 $('#dep' + number).html(depreciationac);
+                $('#depan' + number).html(depreciationan);
                 $('#vledgers' + number).html(valedger);
                 $('#tax' + number).html(afterTaxes);
                 
             } else {
-              if(periodos<=4) depreciationac= (p*((macrs3[number]/100))); 
-              if((periodos>4)&&(periodos<=5))depreciationac= (p*((macrs5[number]/100)));
-              if((periodos>6)&&(periodos<=7))depreciationac= (p*((macrs7[number]/100)));
-              if((periodos>8)&&(periodos<=10))depreciationac= (p*((macrs10[number]/100)));
+              if((depc==3)) depreciationac= (p*((macrs3[number]/100))); 
+              if((depc==5))depreciationac= (p*((macrs5[number]/100)));
+              if((depc==7))depreciationac= (p*((macrs7[number]/100)));
+              if((depc==10))depreciationac= (p*((macrs10[number]/100)));
 
 
               depacu+=depreciationac;
@@ -398,6 +449,7 @@
                 
                 //depreciationac = depreciationac+depreciationan;
                 $('#dep' + number).html((depacu).toFixed(2));
+                $('#depan' + number).html((depreciationac).toFixed(2));
                if(number==syear) {
                 valedgerS =(p-depacu)+ parseFloat(svalue);
                 afterTaxes = (valedgerS*(taxes/100));
@@ -416,10 +468,10 @@
                 
                 
 
-            if(periodos<=4) $('#macrs' + number).html((macrs3[number]));
-            if((periodos>4)&&(periodos<=5)) $('#macrs' + number).html((macrs5[number]));
-            if((periodos>6)&&(periodos<=7)) $('#macrs' + number).html((macrs7[number]));
-            if((periodos>8)&&(periodos<=10)) $('#macrs' + number).html((macrs10[number]));
+            if((depc==3)) $('#macrs' + number).html((macrs3[number]));
+            if((depc==5)) $('#macrs' + number).html((macrs5[number]));
+            if((depc==7)) $('#macrs' + number).html((macrs7[number]));
+            if((depc==10)) $('#macrs' + number).html((macrs10[number]));
                 
             }
 
