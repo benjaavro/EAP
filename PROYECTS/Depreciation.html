@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="../styles.css">
 
+
+      <!-- Graficas -->
+      <script src="./plotly-latest.min.js"></script>
+
     <title>Proyecto Equipo 1</title>
   </head>
   <body>
@@ -156,7 +160,11 @@
       <div class="container" id="output">
           
       </div>
-      
+        <div class="row">
+            <div class="col-4"></div>
+            <div id="tester" style="width:600px;height:250px;"></div>
+            <div class="col-4"></div>
+        </div>
       <div class="row">
           <div class="col-4"></div>
           <div type="submit" class="btn btn-primary col-4" id="calcular" style="display: none;">Calcular Depreciación </div>
@@ -184,6 +192,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script>
+        var x = [];
+        var y =[];
+        function graph(){
+            var Netcash = {
+                x,
+                y,
+                type: 'scatter',
+            };
+            var data = [Netcash];
+            var layout = {
+                title: 'Value in ledgers',
+                xaxis: {
+                    title: 'Periodos',
+                    showgrid: false,
+                    zeroline: false
+                },
+                yaxis: {
+                    title: 'Value in ledgers',
+                    showline: false
+                }
+            };
+            Plotly.newPlot('tester', data, layout, {showSendToCloud: true});
+        }
        $(document).ready(function() {
             $("#sline").click(function() {
                
@@ -395,11 +426,12 @@
             var depreciationac=0;
             var afterTaxes;
             var valedger=0;
-            
+            x.push(number);
             if(number == 0) {
                 depreciationac=0;
                 depreciationan=0
                 valedger=p;
+                y.push(valedger);
                 afterTaxes=(valedger*(taxes/100));
                 $('#dep' + number).html(depreciationac);
                 $('#depan' + number).html(depreciationan);
@@ -414,6 +446,7 @@
                 $('#depan' + number).html((depreciationan).toFixed(2));
                 $('#dep' + number).html((depreciationac).toFixed(2));
                 valedger = (p-depreciationac);
+                y.push(valedger);
                 afterTaxes = (valedger*(taxes/100));
                 $('#vledger' + number).html((valedger).toFixed(2));
                 $('#atax' + number).html((afterTaxes).toFixed(2));
@@ -438,6 +471,7 @@
                 depreciationan=0;
                 depacu=0;
                 valedger=p;
+                y.push(valedger);
                 afterTaxes=(valedger*(taxes/100));
                 $('#dep' + number).html(depreciationac);
                 $('#depan' + number).html(depreciationan);
@@ -460,6 +494,7 @@
                 $('#depan' + number).html((depreciationac).toFixed(2));
                if(number==syear) {
                 valedgerS =(p-depacu)+ parseFloat(svalue);
+                y.push(valedgerS);
                 afterTaxes = (valedgerS*(taxes/100));
                 console.log (valedgerS)
                 $('#vledgers' + number).html((valedgerS).toFixed(2));
@@ -468,6 +503,7 @@
                else 
                {
                 valedger = (p-depacu);
+                y.push(valedger);
                 afterTaxes = (valedger*(taxes/100));
                 $('#vledgers' + number).html((valedger).toFixed(2));
                 $('#tax' + number).html((afterTaxes).toFixed(2));
@@ -499,6 +535,7 @@
                 for(var i = 0; i <= periodos; i++) {
                     DEP(i, principal, salvage,periodos,tax);
                 }
+                graph();
                 
             });
           });
@@ -517,6 +554,7 @@
                 for(var i = 0; i <= periodos; i++) {
                    MACRS(i, principal, salvage,periodos,tax,depCategory,yearSalvage);
                 }
+                graph();
                 
             });
         });
