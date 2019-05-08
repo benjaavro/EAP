@@ -35,6 +35,10 @@
     padding-top: 30px;
 }
 
-#sline {
-    width: 70%;
+#reset {
+    color: white;
+}
+
+#reset:hover {
+    text-decoration: none;
 }
