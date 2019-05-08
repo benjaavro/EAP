@@ -42,3 +42,13 @@
 #reset:hover {
     text-decoration: none;
 }
+
+a {  
+    color: white;
+}
+
+#file {
+    height:70px;
+    padding-top: 10px;
+    background-color: #238DFF;
+}
