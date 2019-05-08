@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="../styles.css">
 
+      <!-- Graficas -->
+      <script src="./plotly-latest.min.js"></script>
+
     <title>Proyecto Equipo 1</title>
   </head>
   <body>
@@ -61,7 +64,11 @@
     <!--- Payback Period Info --->
     <div class="banner banner-payback container-fluid">
         <h2>Payback Period</h2>
-        <h5>Descripción del Payback Period</h5>
+        <h5>El Payback Period o Periodo de retorno
+            es un criterio para evaluar inversiones
+            que se define como el periodo de tiempo
+            requerido para recuperar el capital inicial
+            de una inversión.</h5>
     </div>
     
     <!--- NPV Info --->
@@ -124,6 +131,9 @@
         </div>
         
         <div class="row" style="padding-top: 20px;">
+            <br>
+            <div id="tester" style="width:600px;height:250px;"></div>
+            <br>
             <h3 id="resultado-title" style="text-align: center; display: none; margin: auto;">Valor de la inversión después de N periodos:</h3>
             <br>
             <h1 id="resultado" style="text-align: center; margin: auto;"></h1>
@@ -144,12 +154,36 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     
     <script>
+        var x = [];
+        var y =[];
+        function graph(){
+            var Netcash = {
+                x,
+                y,
+                type: 'scatter',
+            };
+            var data = [Netcash];
+            var layout = {
+                title: 'Net Cash Flow',
+                xaxis: {
+                    title: 'Periodos',
+                    showgrid: false,
+                    zeroline: false
+                },
+                yaxis: {
+                    title: 'Cash Flow',
+                    showline: false
+                }
+            };
+            Plotly.newPlot('tester', data, layout, {showSendToCloud: true});
+        }
         function NPV(number, rate, tax) {
             var inflow = $('#inflow' + number).val();
             var outflow = $('#outflow' + number).val();
             var cash = inflow - outflow;
             var npv;
-            
+            x.push(number);
+            y.push(cash);
             if(number == 0) {
                 npv = cash + (cash * (tax/100));  // In period 0 you must sum taxes to principal
                 $('#npv' + number).html(npv);
@@ -161,7 +195,7 @@
             
             suma = parseFloat(suma) + parseFloat(npv);
             $('#resultado').html((suma).toFixed(2));
-            
+            graph();
             $("#again").css("display", "block");
         }
         

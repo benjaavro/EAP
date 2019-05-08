@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="../styles.css">
 
+      <!-- Graficas -->
+      <script src="./plotly-latest.min.js"></script>
+
     <title>Proyecto Equipo 1</title>
   </head>
   <body>
@@ -61,7 +64,11 @@
     <!--- Payback Period Info --->
     <div class="banner banner-payback container-fluid">
         <h2>Payback Period</h2>
-        <h5>Descripción del Payback Period</h5>
+        <h5>El Payback Period o Periodo de retorno
+            es un criterio para evaluar inversiones
+            que se define como el periodo de tiempo
+            requerido para recuperar el capital inicial
+            de una inversión.</h5>
     </div>
     
     <!--- NPV Info --->
@@ -80,7 +87,7 @@
     <!--- Depreciation Info --->
     <div class="banner banner-depreciation container-fluid">
         <h2>Depreciation</h2>
-        <h5>Descripción de Depreciation</h5>
+        <h5>La Depreciación es un descuento concedido para el consumo de capital. Actúa como un escudo contra los impuestos.</h5>
     </div>
     
     <!--- Proyect Screening Methods --->
@@ -119,11 +126,20 @@
 
         <div class="row">
             <div class="col-4"></div>
-            <div type="submit" class="btn btn-primary col-4" id="calcular" style="display: none;">Calcular PBP</div>
+            <div type="submit" class="btn btn-primary col-4" id="calcular" style="display: none;">Calcular DPBP</div>
+            <div class="col-4"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-4"></div>
+            <div type="submit" class="btn btn-primary col-4" id="calcularB" style="display: none;">Calcular PBP</div>
             <div class="col-4"></div>
         </div>
 
         <div class="row" style="padding-top: 20px;">
+            <br>
+            <div id="tester" style="width:600px;height:250px;"></div>
+            <br>
             <h3 id="resultado-title" style="text-align: center; display: none; margin: auto;">Año de retorno de la inversión:</h3>
             <br>
             <h1 id="resultado" style="text-align: center; margin: auto;"></h1>
@@ -144,6 +160,31 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
     <script>
+
+        var x = [];
+        var y =[];
+        function graph(){
+            var Netcash = {
+                x,
+                y,
+                type: 'scatter',
+            };
+            var data = [Netcash];
+            var layout = {
+                title: 'Net Cash Flow',
+                xaxis: {
+                    title: 'Periodos',
+                    showgrid: false,
+                    zeroline: false
+                },
+                yaxis: {
+                    title: 'Cash Flow',
+                    showline: false
+                }
+            };
+            Plotly.newPlot('tester', data, layout, {showSendToCloud: true});
+        }
+
         var sem = 0;
         function DPBP(number, rate) {
             var periodos = $('#periods-input').val();
@@ -152,11 +193,12 @@
             var cash;
             var df;
             var dfc;
-
-            if(number == 0) {
+            x.push(number);
+            if(number === 0) {
                 $('#df' + number).html(1);
                 df = (1 / Math.pow(1 + (rate), number));
                 cash = $('#inflows' + number).val() - $('#outflows' + number).val();
+                y.push(cash);
                 dfc = df * cash;
                 $('#dfc' + number).html((dfc).toFixed(2));
                 $('#payback' + number).html((dfc).toFixed(2));
@@ -168,21 +210,51 @@
                 $('#df' + number).html((df).toFixed(2));
                 cash = $('#inflows' + number).val() - $('#outflows' + number).val();
                 dfc = df * cash;
+                y.push(cash);
                 $('#dfc' + number).html((dfc).toFixed(2));
                 pbp = pbp + dfc;
-                if(pbp >=0 || (pbp)*-1 < dfc){
+                if(pbp >=0){
                     $('#payback' + number).html((pbp).toFixed(2).fontcolor("green"));
                     if(sem === 0){
                         $("#resultado-title").css("display", "block");
                         console.log("Calculos");
                         console.log(pbp);
                         console.log(dfc);
-                        sem = (periodos-1) + ((pbp)/dfc);
-                        $('#resultado').html((sem).toFixed(2));
+                        sem = (periodos-1) + ((pbp));
+                        $('#resultado').html((number).toFixed(2));
                     sem = 1;}
                 }
                 else $('#payback' + number).html((pbp).toFixed(2));
             }
+            graph();
+            $("#again").css("display", "block");
+        }
+
+        function PBP(number) {
+            var periodos = $('#periods-input').val();
+            var principal = $('#principal').val();
+            var cash;
+            x.push(number);
+            if(number === 0) {
+                cash = $('#inflows' + number).val() - $('#outflows' + number).val();
+                pbp = cash;
+                y.push(cash);
+                $('#payback' + number).html((pbp).toFixed(2));
+            } else {
+                cash = $('#inflows' + number).val() - $('#outflows' + number).val();
+                pbp = pbp + cash;
+                y.push(cash);
+                if(pbp >=0){
+                    $('#payback' + number).html((pbp).toFixed(2).fontcolor("green"));
+                    if(sem === 0){
+                        $("#resultado-title").css("display", "block");
+                        sem = (periodos-1) + (pbp);
+                        $('#resultado').html((number).toFixed(2));
+                        sem = 1;}
+                }
+                else $('#payback' + number).html((pbp).toFixed(2));
+            }
+            graph();
             $("#again").css("display", "block");
         }
 
@@ -207,6 +279,23 @@
                 '<h3 id="payback' + number + '"><i> - </i></h3>' +
                 '</div>'
                         );
+        };
+
+        function addRowB(number) {
+            $("#output").append('<div class="row">' +
+                '<div class="col-3">' +
+                '<h3>' + number + '<h3>' +
+                '</div>' +
+                '<div class="col-3">' +
+                '<input id="inflows' + number +'" type="number" required step="0.01">' +
+                '</div>' +
+                '<div class="col-3">' +
+                '<input id="outflows' + number +'" type="number" required step="0.01">' +
+                '</div>' +
+                '<div class="col-3">' +
+                '<h3 id="payback' + number + '"><i> - </i></h3>' +
+                '</div>'
+            );
         };
 
 
@@ -253,6 +342,43 @@
                     $("#calcular").css("display", "block");
                     document.getElementById("outflows0").value = principal;
 
+                } else{
+                    if(tasa > 100) alert("La tasa no puede ser mayor a 100");
+                    else {
+                        if(tasa === " " || tasa <0) alert("Tasa  vacia favor de rellenar el campo");
+                        else{
+                            if(periodos < 1 || periodos > 10) alert("Los periodos deben ser entre 1 y 10");
+                            else{
+                                if(principal === " " || principal <= 0) alert("El campo de principal esta vacio o tiene como valor '0'");
+                                else{
+                                    if(tasa === 0) {
+                                        $("#output").append("<h4> Número de periodos: " + periodos + "</h4>");
+                                        $("#output").append(
+                                            '<div class="row">' +
+                                            '<div class="col-3">' +
+                                            '<h3>Period<h3>' +
+                                            '</div>' +
+                                            '<div class="col-3">' +
+                                            '<h3>INFLOWS<h3>' +
+                                            '</div>' +
+                                            '<div class="col-3">' +
+                                            '<h3>OUTFLOWS<h3>' +
+                                            '</div>' +
+                                            '<div class="col-3">' +
+                                            '<h3>PAYBACK<h3>' +
+                                            '</div>' +
+                                            '</div>');
+                                        for(var x = 0; x <= periodos; x++) {
+                                            addRowB(x);
+                                        }
+
+                                        $("#calcularB").css("display", "block");
+                                        document.getElementById("outflows0").value = principal;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             });
         });
@@ -266,6 +392,18 @@
 
                 for(var i = 0; i <= periodos; i++) {
                     DPBP(i, tasa);
+                }
+
+            });
+
+            $("#calcularB").click(function() {
+                var periodos = $('#periods-input').val();
+                var tasa = $('#rate-input').val()/100;
+                var principal = $('#principal').val();
+                var pbp;
+
+                for(var i = 0; i <= periodos; i++) {
+                    PBP(i);
                 }
 
             });

@@ -35,6 +35,20 @@
     padding-top: 30px;
 }
 
-#sline {
-    width: 70%;
+#reset {
+    color: white;
+}
+
+#reset:hover {
+    text-decoration: none;
+}
+
+a {  
+    color: white;
+}
+
+#file {
+    height:70px;
+    padding-top: 10px;
+    background-color: #238DFF;
 }
