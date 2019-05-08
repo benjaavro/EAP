@@ -137,6 +137,9 @@
         </div>
 
         <div class="row" style="padding-top: 20px;">
+            <br>
+            <div id="tester" style="width:600px;height:250px;"></div>
+            <br>
             <h3 id="resultado-title" style="text-align: center; display: none; margin: auto;">Año de retorno de la inversión:</h3>
             <br>
             <h1 id="resultado" style="text-align: center; margin: auto;"></h1>
@@ -157,6 +160,31 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
     <script>
+
+        var x = [];
+        var y =[];
+        function graph(){
+            var Netcash = {
+                x,
+                y,
+                type: 'scatter',
+            };
+            var data = [Netcash];
+            var layout = {
+                title: 'Net Cash Flow',
+                xaxis: {
+                    title: 'Periodos',
+                    showgrid: false,
+                    zeroline: false
+                },
+                yaxis: {
+                    title: 'Cash Flow',
+                    showline: false
+                }
+            };
+            Plotly.newPlot('tester', data, layout, {showSendToCloud: true});
+        }
+
         var sem = 0;
         function DPBP(number, rate) {
             var periodos = $('#periods-input').val();
@@ -165,11 +193,12 @@
             var cash;
             var df;
             var dfc;
-
+            x.push(number);
             if(number === 0) {
                 $('#df' + number).html(1);
                 df = (1 / Math.pow(1 + (rate), number));
                 cash = $('#inflows' + number).val() - $('#outflows' + number).val();
+                y.push(cash);
                 dfc = df * cash;
                 $('#dfc' + number).html((dfc).toFixed(2));
                 $('#payback' + number).html((dfc).toFixed(2));
@@ -181,6 +210,7 @@
                 $('#df' + number).html((df).toFixed(2));
                 cash = $('#inflows' + number).val() - $('#outflows' + number).val();
                 dfc = df * cash;
+                y.push(cash);
                 $('#dfc' + number).html((dfc).toFixed(2));
                 pbp = pbp + dfc;
                 if(pbp >=0){
@@ -196,6 +226,7 @@
                 }
                 else $('#payback' + number).html((pbp).toFixed(2));
             }
+            graph();
             $("#again").css("display", "block");
         }
 
@@ -203,14 +234,16 @@
             var periodos = $('#periods-input').val();
             var principal = $('#principal').val();
             var cash;
-
+            x.push(number);
             if(number === 0) {
                 cash = $('#inflows' + number).val() - $('#outflows' + number).val();
                 pbp = cash;
+                y.push(cash);
                 $('#payback' + number).html((pbp).toFixed(2));
             } else {
                 cash = $('#inflows' + number).val() - $('#outflows' + number).val();
                 pbp = pbp + cash;
+                y.push(cash);
                 if(pbp >=0){
                     $('#payback' + number).html((pbp).toFixed(2).fontcolor("green"));
                     if(sem === 0){
@@ -221,6 +254,7 @@
                 }
                 else $('#payback' + number).html((pbp).toFixed(2));
             }
+            graph();
             $("#again").css("display", "block");
         }
 
