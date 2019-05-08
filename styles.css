@@ -52,3 +52,27 @@ a {
     padding-top: 10px;
     background-color: #238DFF;
 }
+
+.filaT {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    
+}
+
+.fila {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    
+}
+
+.backgroundT {
+    background-color: #238DFF;
+    color:  white;
+}
+
+.bold {
+    font-weight: bold;
+    background-color: #238DFF;
+    opacity: 0.7;
+    color: white;
+}
